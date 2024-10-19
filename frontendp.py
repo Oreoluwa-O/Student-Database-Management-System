@@ -2,174 +2,171 @@
 from tkinter import *
 import tkinter.messagebox
 import dbbackend
-class Student:
 
-    def __init__(self,root):
-        self.root =root
+class StudentDatabaseApp:
+    def __init__(self, root):
+        self.root = root
         self.root.title("Student Database Management System")
         self.root.geometry("1350x750+0+0")
-        self.root.config(bg="cadet blue")
+        self.root.config(bg="#1C1C1C")  # Black background for the main window
 
-        StdID = StringVar()
-        Firstname = StringVar()
-        Surname = StringVar()
-        DoB = StringVar()
-        Age = StringVar()
-        Gender = StringVar()
-        Address = StringVar()
-        Mobile = StringVar()
-# --------------------------------------FUNCTIONS-------------------------------------------------------------------
-        def iExit():
-            iExit = tkinter.messagebox.askyesno("Student Database Management Systems", "Confirm if you want to exit")
-            if iExit > 0:
-                root.destroy()
-                return
-        def clearData():
-            self.txtStdID.delete(0, END)
-            self.txtfna.delete(0, END)
-            self.txtSna.delete(0, END)
-            self.txtDoB.delete(0, END)
-            self.txtAge.delete(0, END)
-            self.txtGender.delete(0, END)
-            self.txtAdr.delete(0, END)
-            self.txtMobile.delete(0, END)
-        def addData():
-            if(len(StdID.get())!=0):
-                dbbackend.addStdRec(StdID.get(), Firstname.get(), Surname.get() , DoB.get() ,Age.get(), Gender.get(), Address.get(), Mobile.get())
-                studentlist.delete(0, END)
-                studentlist.insert(END, (StdID.get(), Firstname.get(), Surname.get(), DoB.get(), Age.get(), Gender.get(), Address.get(), Mobile.get()))
+        # Initialize StringVar variables for form fields
+        self.StdID = StringVar()
+        self.Firstname = StringVar()
+        self.Surname = StringVar()
+        self.DoB = StringVar()
+        self.Age = StringVar()
+        self.Gender = StringVar()
+        self.Address = StringVar()
+        self.Mobile = StringVar()
 
-        def DisplayData():
-            studentlist.delete(0,END)
-            for row in dbbackend.viewData():
-                studentlist.insert(END, row, str(""))
+        # Setup UI components
+        self.setup_ui()
 
-        def StudentRec(event):
-            global sd
-            searchStd= studentlist.curselection()[0]
-            sd = studentlist.get(searchStd)
-
-            self.txtStdID.delete(0, END)
-            self.txtStdID.insert(END, sd[1])
-            self.txtfna.delete(0, END)
-            self.txtfna.insert(END, sd[2])
-            self.txtSna.delete(0, END)
-            self.txtSna.insert(END, sd[3])
-            self.txtDoB.delete(0, END)
-            self.txtDoB.insert(END, sd[4])
-            self.txtAge.delete(0, END)
-            self.txtAge.insert(END, sd[5])
-            self.txtGender.delete(0, END)
-            self.txtGender.insert(END, sd[6])
-            self.txtAdr.delete(0, END)
-            self.txtAdr.insert(END, sd[7])
-            self.txtMobile.delete(0, END)
-            self.txtMobile.insert(END, sd[8])
-
-        def DeleteData():
-            if(len(StdID.get())!=0):
-                dbbackend.deleteRec(sd[0])
-                clearData()
-                DisplayData()
-
-        def searchDatabase():
-            studentlist.delete(0,END)
-            for row in dbbackend.searchData(StdID.get(), Firstname.get(), Surname.get() , DoB.get() ,Age.get(), Gender.get(), Address.get(), Mobile.get()):
-                studentlist.insert(END, row, str(""))
-
-        def update():
-            if (len(StdID.get()) != 0):
-                dbbackend.deleteRec(sd[0])
-            if (len(StdID.get()) != 0):
-                dbbackend.addStdRec(StdID.get(), Firstname.get(), Surname.get(), DoB.get(), Age.get(), Gender.get(),Address.get(), Mobile.get())
-                studentlist.delete(0, END)
-                studentlist.insert(END, (StdID.get(), Firstname.get(), Surname.get(), DoB.get(), Age.get(), Gender.get(), Address.get(), Mobile.get()))
-#--------------------------------------Frames-----------------------------------------------------------------------__________________________________________________________
-        MainFrame = Frame(self.root, bg="cadet blue")
+    def setup_ui(self):
+        # Main frame
+        MainFrame = Frame(self.root, bg="#2E2E2E")  # Dark gray for contrast
         MainFrame.grid()
-        TitFrame = Frame(MainFrame, bd=2, padx=54,pady=8, bg="Ghost White", relief=RIDGE)
+
+        # Title frame
+        TitFrame = Frame(MainFrame, bd=2, padx=54, pady=8, bg="#FF4C4C", relief=RIDGE)  # Red background
         TitFrame.pack(side=TOP)
-        self.lblTit = Label(TitFrame ,font=('times new roman',48,'bold'),text="Student Database Management System",bg="Ghost White")
-        self.lblTit.grid()
-        ButtonFrame =Frame(MainFrame,bd=2,width=1350,height=70,padx=19,pady=10,bg="Ghost White",relief =RIDGE)
+        lblTit = Label(TitFrame, font=('times new roman', 48, 'bold'), text="Student Database Management System", bg="#FF4C4C", fg="#1C1C1C")
+        lblTit.grid()
+
+        # Button frame
+        ButtonFrame = Frame(MainFrame, bd=2, width=1350, height=70, padx=19, pady=10, bg="#FF4C4C", relief=RIDGE)
         ButtonFrame.pack(side=BOTTOM)
-        DataFrame = Frame(MainFrame, bd=1, width=1300, height=400, padx=20, pady=20, relief=RIDGE,bg="cadet blue")
+
+        # Data frame
+        DataFrame = Frame(MainFrame, bd=1, width=1300, height=400, padx=20, pady=20, relief=RIDGE, bg="#2E2E2E")
         DataFrame.pack(side=BOTTOM)
-        DataFrameLEFT = LabelFrame(DataFrame, bd=1, width=1000, height=600, padx=20,relief=RIDGE,bg="Ghost White", font=('times new roman',26,'bold'),text="Student Info\n")
+
+        # Left data frame for form inputs
+        DataFrameLEFT = LabelFrame(DataFrame, bd=1, width=1000, height=600, padx=20, relief=RIDGE, bg="#FF4C4C", font=('times new roman', 26, 'bold'), text="Student Info\n", fg="#1C1C1C")
         DataFrameLEFT.pack(side=LEFT)
-        DataFrameRIGHT = LabelFrame(DataFrame, bd=1, width=450, height=300, padx=31, pady=3, relief=RIDGE,bg="Ghost White",font=('times new roman',20,'bold'),text="Student Details\n")
+
+        # Right data frame for listbox
+        DataFrameRIGHT = LabelFrame(DataFrame, bd=1, width=450, height=300, padx=31, pady=3, relief=RIDGE, bg="#FF4C4C", font=('times new roman', 20, 'bold'), text="Student Details\n", fg="#1C1C1C")
         DataFrameRIGHT.pack(side=RIGHT)
-#--------------------------------entries-------------------------------------------------------------------------------------------------
-        self.lblStdID = Label(DataFrameLEFT, font=('times new roman', 20, 'bold'), text="Student ID:",padx=2,pady=2,bg="Ghost White")
-        self.lblStdID.grid(row=0,column=0,sticky=W)
-        self.txtStdID = Entry(DataFrameLEFT, font=('times new roman', 20, 'bold'), textvariable=StdID, width=39)
-        self.txtStdID.grid(row=0, column=1)
 
-        self.lblfna = Label(DataFrameLEFT, font=('times new roman', 20, 'bold'), text="Firstname:", padx=2, pady=2,bg="Ghost White")
-        self.lblfna.grid(row=1, column=0, sticky=W)
-        self.txtfna = Entry(DataFrameLEFT, font=('times new roman', 20, 'bold'), textvariable=Firstname, width=39)
-        self.txtfna.grid(row=1, column=1)
+        # Form fields
+        self.create_form_fields(DataFrameLEFT)
 
-        self.lblSna = Label(DataFrameLEFT, font=('times new roman', 20, 'bold'), text="Surname:", padx=2, pady=2,bg="Ghost White")
-        self.lblSna.grid(row=2, column=0, sticky=W)
-        self.txtSna = Entry(DataFrameLEFT, font=('times new roman', 20, 'bold'), textvariable=Surname, width=39)
-        self.txtSna.grid(row=2, column=1)
+        # Listbox and scrollbar
+        self.create_listbox(DataFrameRIGHT)
 
-        self.lblDoB = Label(DataFrameLEFT, font=('times new roman', 20, 'bold'), text="Date of Birth:", padx=2, pady=2,bg="Ghost White")
-        self.lblDoB.grid(row=3, column=0, sticky=W)
-        self.txtDoB = Entry(DataFrameLEFT, font=('times new roman', 20, 'bold'), textvariable=DoB, width=39)
-        self.txtDoB.grid(row=3, column=1)
+        # Buttons
+        self.create_buttons(ButtonFrame)
 
-        self.lblAge = Label(DataFrameLEFT, font=('times new roman', 20, 'bold'), text="Age:", padx=2, pady=2,bg="Ghost White")
-        self.lblAge.grid(row=4, column=0, sticky=W)
-        self.txtAge = Entry(DataFrameLEFT, font=('times new roman', 20, 'bold'), textvariable=Age, width=39)
-        self.txtAge.grid(row=4, column=1)
+    def create_form_fields(self, parent):
+        # Create form fields with labels and entry boxes
+        labels = ["Student ID:", "Firstname:", "Surname:", "Date of Birth:", "Age:", "Gender:", "Address:", "Mobile:"]
+        variables = [self.StdID, self.Firstname, self.Surname, self.DoB, self.Age, self.Gender, self.Address, self.Mobile]
 
-        self.lblGender = Label(DataFrameLEFT, font=('times new roman', 20, 'bold'), text="Gender:", padx=2, pady=2,bg="Ghost White")
-        self.lblGender.grid(row=5, column=0, sticky=W)
-        self.txtGender = Entry(DataFrameLEFT, font=('times new roman', 20, 'bold'), textvariable=Gender, width=39)
-        self.txtGender.grid(row=5, column=1)
+        for i, (label_text, var) in enumerate(zip(labels, variables)):
+            label = Label(parent, font=('times new roman', 20, 'bold'), text=label_text, padx=2, pady=2, bg="#FF4C4C", fg="#1C1C1C")
+            label.grid(row=i, column=0, sticky=W)
+            entry = Entry(parent, font=('times new roman', 20, 'bold'), textvariable=var, width=39)
+            entry.grid(row=i, column=1)
 
-        self.lblAdr = Label(DataFrameLEFT, font=('times new roman', 20, 'bold'), text="Address:", padx=2, pady=2,bg="Ghost White")
-        self.lblAdr.grid(row=6, column=0, sticky=W)
-        self.txtAdr = Entry(DataFrameLEFT, font=('times new roman', 20, 'bold'), textvariable=Address, width=39)
-        self.txtAdr.grid(row=6, column=1)
+    def create_listbox(self, parent):
+        # Create listbox with scrollbar
+        scrollbar = Scrollbar(parent)
+        scrollbar.grid(row=0, column=1, sticky='ns')
 
-        self.lblMobile = Label(DataFrameLEFT, font=('times new roman', 20, 'bold'), text="Mobile:", padx=2, pady=2,bg="Ghost White")
-        self.lblMobile.grid(row=7, column=0, sticky=W)
-        self.txtMobile = Entry(DataFrameLEFT, font=('times new roman', 20, 'bold'), textvariable=Mobile, width=39)
-        self.txtMobile.grid(row=7, column=1)
-#--------------------------------------scroll bar and list box----------------------------------------------------------------------------
-        scrollbar= Scrollbar(DataFrameRIGHT)
-        scrollbar.grid(row=0,column=1,sticky='ns')
+        self.studentlist = Listbox(parent, width=41, height=16, font=('times new roman', 12, 'bold'), yscrollcommand=scrollbar.set, bg="#FF4C4C", fg="#1C1C1C")
+        self.studentlist.bind('<<ListboxSelect>>', self.StudentRec)
+        self.studentlist.grid(row=0, column=0, padx=8)
+        scrollbar.config(command=self.studentlist.yview)
 
-        studentlist = Listbox(DataFrameRIGHT, width=41, height=16, font=('times new roman', 12, 'bold'),yscrollcommand=scrollbar.set)
-        studentlist.bind('<<ListboxSelect>>',StudentRec)
-        studentlist.grid(row=0, column=0, padx=8)
-        scrollbar.config(command=studentlist.yview)
-#--------------------------------------buttons-----------------------------------------------------------------------------------------------------------
-        self.btnAddData = Button(ButtonFrame, text="Add New", font=('times new roman', 20, 'bold'), height=1, width=10, bd=4, command=addData)
-        self.btnAddData.grid(row=0, column =0)
+    def create_buttons(self, parent):
+        # Create buttons with associated commands
+        buttons = [
+            ("Add New", self.addData),
+            ("Display", self.DisplayData),
+            ("Clear", self.clearData),
+            ("Delete", self.DeleteData),
+            ("Search", self.searchDatabase),
+            ("Update", self.update),
+            ("Exit", self.iExit)
+        ]
 
-        self.btnDisplayData = Button(ButtonFrame, text="Display", font=('times new roman', 20, 'bold'), height=1, width=10, bd=4, command=DisplayData)
-        self.btnDisplayData.grid(row=0, column=1)
+        for i, (text, command) in enumerate(buttons):
+            button = Button(parent, text=text, font=('times new roman', 20, 'bold'), height=1, width=10, bd=4, command=command, bg="#1C1C1C", fg="#FF4C4C")
+            button.grid(row=0, column=i)
 
-        self.btnClearData = Button(ButtonFrame, text="Clear", font=('times new roman', 20, 'bold'), height=1, width=10, bd=4,command=clearData)
-        self.btnClearData.grid(row=0, column=2)
+    def iExit(self):
+        # Exit the application
+        if tkinter.messagebox.askyesno("Student Database Management Systems", "Confirm if you want to exit"):
+            self.root.destroy()
 
-        self.btnDeleteData = Button(ButtonFrame, text="Delete", font=('times new roman', 20, 'bold'), height=1, width=10, bd=4,command=DeleteData)
-        self.btnDeleteData.grid(row=0, column=3)
+    def clearData(self):
+        # Clear all form fields
+        for var in [self.StdID, self.Firstname, self.Surname, self.DoB, self.Age, self.Gender, self.Address, self.Mobile]:
+            var.set("")
 
-        self.btnSearchData = Button(ButtonFrame, text="Search", font=('times new roman', 20, 'bold'), height=1, width=10, bd=4,command=searchDatabase)
-        self.btnSearchData.grid(row=0, column=4)
+    def addData(self):
+        # Add new student record
+        if self.StdID.get():
+            dbbackend.addStdRec(self.StdID.get(), self.Firstname.get(), self.Surname.get(), self.DoB.get(), self.Age.get(), self.Gender.get(), self.Address.get(), self.Mobile.get())
+            self.studentlist.delete(0, END)
+            self.studentlist.insert(END, (self.StdID.get(), self.Firstname.get(), self.Surname.get(), self.DoB.get(), self.Age.get(), self.Gender.get(), self.Address.get(), self.Mobile.get()))
 
-        self.btnUpdateData = Button(ButtonFrame, text="Update", font=('times new roman', 20, 'bold'), height=1, width=10, bd=4,command=update)
-        self.btnUpdateData.grid(row=0, column=5)
+    def DisplayData(self):
+        # Display all student records
+        self.studentlist.delete(0, END)
+        for row in dbbackend.viewData():
+            self.studentlist.insert(END, row)
 
-        self.btnExit = Button(ButtonFrame, text="Exit", font=('times new roman', 20, 'bold'), height=1, width=10, bd=4, command=iExit)
-        self.btnExit.grid(row=0, column=6)
+    def StudentRec(self, event):
+        # Populate form fields with selected record
+        searchStd = self.studentlist.curselection()[0]
+        sd = self.studentlist.get(searchStd)
 
-if __name__=='__main__':
+        self.StdID.set(sd[1])
+        self.Firstname.set(sd[2])
+        self.Surname.set(sd[3])
+        self.DoB.set(sd[4])
+        self.Age.set(sd[5])
+        self.Gender.set(sd[6])
+        self.Address.set(sd[7])
+        self.Mobile.set(sd[8])
+
+    def DeleteData(self):
+        # Delete selected student record
+        if self.StdID.get():
+            dbbackend.deleteRec(self.StdID.get())
+            self.clearData()
+            self.DisplayData()
+
+    def searchDatabase(self):
+        # Search for student records
+        self.studentlist.delete(0, END)
+        for row in dbbackend.searchData(self.StdID.get(), self.Firstname.get(), self.Surname.get(), self.DoB.get(), self.Age.get(), self.Gender.get(), self.Address.get(), self.Mobile.get()):
+            self.studentlist.insert(END, row)
+
+    def update(self):
+        # Update selected student record
+        if self.StdID.get():
+            selected_index = self.studentlist.curselection()[0]
+            selected_record = self.studentlist.get(selected_index)
+            record_id = selected_record[0]  # Assuming the ID is the first element
+
+            dbbackend.dataUpdate(
+                record_id,
+                self.StdID.get(),
+                self.Firstname.get(),
+                self.Surname.get(),
+                self.DoB.get(),
+                self.Age.get(),
+                self.Gender.get(),
+                self.Address.get(),
+                self.Mobile.get()
+            )
+            self.DisplayData()
+
+if __name__ == '__main__':
     root = Tk()
-    application = Student(root)
+    app = StudentDatabaseApp(root)
     root.mainloop()
