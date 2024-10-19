@@ -19,7 +19,7 @@ The application features a graphical user interface built with Tkinter. The inte
 
 ### Exit Functionality
 
-The application includes an exit button that prompts the user for confirmation. If 'Yes' is selected, the application will close; if 'No' is selected, the application will remain open.
+The application includes an exit button that prompts the user for confirmation. If 'Yes' is selected, the application will close; if 'No' is selected, the application will remain open..
 
 
 ## Technical Details
